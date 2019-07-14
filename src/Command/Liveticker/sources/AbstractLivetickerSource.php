@@ -6,6 +6,7 @@ namespace App\Command\Liveticker\sources;
 
 use App\Command\Liveticker\exceptions\APINotLoadableException;
 use App\Command\Liveticker\lib\LivetickerCLILogger;
+use App\Command\Liveticker\AbstractLivetickerCommand;
 use App\Command\Liveticker\sources\sportal\entities\SourceEntityInterface;
 use App\Command\Liveticker\sources\sportal\sports\exceptions\SportNotSupportedException;
 use App\Command\Liveticker\sources\sportal\sports\SportInterface;
@@ -20,9 +21,6 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 abstract class AbstractLivetickerSource
 {
-    const MODUS_CIRCULAR = 'circular';
-    const MODUS_DAILY = 'daily';
-
     protected $logger;
     protected $entityManager;
 
@@ -65,9 +63,9 @@ abstract class AbstractLivetickerSource
     }
 
     protected function getEntrypoints(String $option): array {
-        if($option == self::MODUS_DAILY) {
+        if($option == AbstractLivetickerCommand::MODUS_DAILY) {
             return $this->getDailyEntrypoint();
-        } elseif($option == self::MODUS_CIRCULAR) {
+        } elseif($option == AbstractLivetickerCommand::MODUS_CIRCULAR) {
             return $this->getCircularEntrypoint();
         }
 

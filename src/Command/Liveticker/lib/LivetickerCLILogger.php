@@ -9,7 +9,6 @@ use Monolog\Logger;
 class LivetickerCLILogger extends Logger
 {
     private $source;
-    private $modus;
 
     function __construct(array $handlers = array(), array $processors = array())
     {
@@ -20,14 +19,9 @@ class LivetickerCLILogger extends Logger
         $this->source = $source;
     }
 
-    public function setModus($modus) {
-        $this->modus = $modus;
-    }
-
     private function getContext(): array {
         return [
             "source" => $this->source,
-            "modus" => $this->modus
         ];
     }
 
