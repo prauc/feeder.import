@@ -63,7 +63,7 @@ class League
 
     public function getSport(): ?Sport
     {
-        return $this->sportId;
+        return $this->sport;
     }
 
     public function setSport(?Sport $sport): self
