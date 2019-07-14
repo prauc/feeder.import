@@ -29,3 +29,7 @@ services:
     App\Command\Liveticker\CircularLivetickerCommand:
         tags:
             - { name: 'console.command', command: 'daemon:liveticker:circular' }
+
+    App\Command\Liveticker\DailyLivetickerCommand:
+        tags:
+            - { name: 'console.command', command: 'daemon:liveticker:daily' }
