@@ -35,12 +35,12 @@ class Sportal extends AbstractLivetickerSource
         ];
     }
 
-    public function execute(String $modus)
+    public function execute()
     {
-        $entrypoints = $this->getEntrypoints($modus);
+        $entrypoints = $this->getEntrypoints($this->getModus());
         foreach ($entrypoints as $entrypoint) {
             try {
-                $data = $this->crawlData($entrypoint);
+                $data = $this->crawlData($entrypoint, "overview");
                 foreach($data->DEFINITION->CONTENTITEM as $node) {
                     $match = new Match();
 
@@ -59,18 +59,25 @@ class Sportal extends AbstractLivetickerSource
                             'sportal' => $sportid
                         ]);
                         $match->setSport($sport->getInternal());
+                        $match->setType(Match::TYPE_SINGLE);
+                        $match->setDate(new \DateTime(sprintf("%s %s", $contentitem->getDATE(), $contentitem->getTIME())));
+
+                        if($commentary = $this->crawlData($contentitem->getCOMMENTARY(), "commentary")) {
+                            $match->setCommentaryUrl($contentitem->getCOMMENTARY());
+                        }
+
+                        if($statistics = $this->crawlData($contentitem->getGAMEINFO(), "statistics")) {
+                            $match->setStatisticsUrl($contentitem->getGAMEINFO());
+                        }
 
                         var_dump($match);
-
-                        $commentary = $this->crawlData($contentitem->getCOMMENTARY());
-                        $statistics = $this->crawlData($contentitem->getGAMEINFO());
 
                     } catch (SportNotSupportedException $e) {
                         $this->logger->debug($e->getMessage());
                         continue;
                     } catch (APINotLoadableException $e) {
                         $match->setActive(false);
-                        $this->logger->debug($e->getMessage());
+                        $this->logger->error($e->getMessage());
                         continue;
                     }
                 }

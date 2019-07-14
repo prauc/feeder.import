@@ -15,6 +15,7 @@ class Contentitem implements SourceEntityInterface
     private $SPORTID;
     private $HEADLINE;
     private $COMPETITION;
+    private $TIME;
     private $STATUS;
     private $COMMENTARY;
     private $GAMEINFO;
@@ -132,6 +133,22 @@ class Contentitem implements SourceEntityInterface
     public function setCOMPETITION($COMPETITION): void
     {
         $this->COMPETITION = $COMPETITION;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTIME()
+    {
+        return $this->TIME;
+    }
+
+    /**
+     * @param mixed $TIME
+     */
+    public function setTIME($TIME): void
+    {
+        $this->TIME = $TIME;
     }
 
     /**
