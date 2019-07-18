@@ -18,7 +18,8 @@
         "symfony/orm-pack": "dev-master",
         "symfony/property-access": "4.4.*",
         "symfony/serializer": "4.4.*",
-        "symfony/yaml": "*"
+        "symfony/yaml": "*",
+      "ext-simplexml": "*"
     },
     "require-dev": {
         "symfony/maker-bundle": "^1.0@dev"

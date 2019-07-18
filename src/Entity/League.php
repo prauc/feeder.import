@@ -17,7 +17,7 @@ class League
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $type;
 
@@ -28,24 +28,34 @@ class League
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Sport")
-     * @ORM\JoinColumn(name="sportId", nullable=false)
+     * @ORM\JoinColumn(nullable=false)
      */
     private $sport;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $sportal;
 
     /**
-     * @ORM\Column(type="string", length=25, nullable=true)
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    private $opta;
+
+    /**
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $gsm;
 
     /**
-     * @ORM\Column(type="string", length=25, nullable=true)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $spox;
+
+    /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    private $shortcut;
 
     public function getId(): ?int
     {
@@ -57,7 +67,7 @@ class League
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(?string $type): self
     {
         $this->type = $type;
 
@@ -100,6 +110,18 @@ class League
         return $this;
     }
 
+    public function getOpta(): ?string
+    {
+        return $this->opta;
+    }
+
+    public function setOpta(?string $opta): self
+    {
+        $this->opta = $opta;
+
+        return $this;
+    }
+
     public function getGsm(): ?string
     {
         return $this->gsm;
@@ -120,6 +142,18 @@ class League
     public function setSpox(?string $spox): self
     {
         $this->spox = $spox;
+
+        return $this;
+    }
+
+    public function getShortcut(): ?string
+    {
+        return $this->shortcut;
+    }
+
+    public function setShortcut(?string $shortcut): self
+    {
+        $this->shortcut = $shortcut;
 
         return $this;
     }

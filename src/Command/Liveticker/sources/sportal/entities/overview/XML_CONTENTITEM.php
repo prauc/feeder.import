@@ -6,7 +6,7 @@ namespace App\Command\Liveticker\sources\sportal\entities\overview;
 
 use App\Command\Liveticker\sources\sportal\entities\SourceEntityInterface;
 
-class Contentitem implements SourceEntityInterface
+class XML_CONTENTITEM implements SourceEntityInterface
 {
     private $MATCHID;
     private $DIVISIONID;
