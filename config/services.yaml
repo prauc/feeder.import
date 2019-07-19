@@ -31,7 +31,3 @@ services:
         tags: ['controller.service_arguments']
         arguments:
             - "%daemonYaml%"
-
-
-imports:
-    - { resource: 'daemons.yaml' }

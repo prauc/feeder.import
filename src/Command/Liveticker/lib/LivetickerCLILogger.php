@@ -25,6 +25,11 @@ class LivetickerCLILogger extends Logger
         ];
     }
 
+    public function info($message, array $context = array())
+    {
+        return parent::info($message, array_merge($context, $this->getContext()));
+    }
+
     public function debug($message, array $context = array())
     {
         return parent::debug($message, array_merge($context, $this->getContext()));

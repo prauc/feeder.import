@@ -7,9 +7,11 @@ namespace App\Command\Liveticker\sources\sportal\sports;
 use App\Command\lib\XMLtoObjectTrait;
 use App\Command\Liveticker\AbstractLivetickerCommand;
 use App\Command\Liveticker\exceptions\MatchStatusNotFoundException;
+use App\Command\Liveticker\sources\sportal\entities\soccer\commentary\XML_COMMENTARY;
 use App\Command\Liveticker\sources\sportal\entities\soccer\statistics\XML_FOOTBALL;
 use App\Command\Liveticker\sources\sportal\entities\soccer\statistics\XML_DOCUMENT;
 use App\Command\Liveticker\sources\sportal\entities\soccer\statistics\XML_MATCHCENTRE;
+use App\Entity\Commentary;
 use App\Entity\Match;
 use App\Entity\MatchSoccer;
 use App\Entity\MatchSportInterface;
@@ -17,6 +19,7 @@ use App\Entity\MatchStatus;
 use App\Entity\Sport;
 use App\Entity\Team;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use SimpleXMLElement;
 
@@ -39,7 +42,7 @@ class Soccer implements SportInterface
         ]);
 
         if($match_soccer === null) {
-            $match_soccer = new MatchSoccer();
+            $match_soccer = new MatchSoccer;
             $match_soccer->setParent($match);
         }
 
@@ -54,6 +57,16 @@ class Soccer implements SportInterface
 
         if($villain = $this->getTeam($matchcentre->getTEAM()[1], $match)) {
             $match_soccer->setVillain($villain);
+        }
+
+        $match->setHash($this->getHash($hero, $villain, $match->getStartDatetime()));
+
+        /** @var ArrayCollection $commentary */
+        $commentary = $this->getCommentary($commentary, $match);
+        if(count($commentary) > 0) {
+            foreach($commentary as $comment) {
+                $this->entityManager->persist($comment);
+            }
         }
 
         $match_soccer->setHalftimeResult($this->getResult(
@@ -113,7 +126,7 @@ class Soccer implements SportInterface
         ]);
 
         if($team === null) {
-            $team = new Team();
+            $team = new Team;
             $team->setLeague($match->getLeague());
             $team->setName($team_data["@name"]);
             $team->setSportal($team_data["@id"]);
@@ -130,8 +143,42 @@ class Soccer implements SportInterface
         return sprintf("%s : %s", $hero, $villain);
     }
 
+    private function getCommentary(SimpleXMLElement $commentary, Match $match): ArrayCollection
+    {
+        $commentary_arraycollection = new ArrayCollection();
+        /** @var XML_COMMENTARY $commentary_list */
+        if (!empty($commentary->COMMENTARY)) {
+            $commentary_list = $this->deserializeData($commentary->COMMENTARY, XML_COMMENTARY::class);
+            $comments = is_array($commentary_list->getCOMMENT() ? $commentary_list->getCOMMENT() : array($commentary_list->getCOMMENT()));
+            foreach($comments as $node) {
+                $sort_id = $node;
+
+                $comment = $this->entityManager->getRepository(Commentary::class)->findOneBy([
+                    "match" => $match,
+                    "sort_id" => $sort_id
+                ]);
+
+                if($comment === null) {
+                    $comment = new Commentary;
+                    $comment->setMatch($match);
+                    $comment->setSortId($sort_id);
+                }
+
+                $comment->setMinute($node["@time"]);
+                $comment->setStatus(null);
+                $comment->setComment($node["#"]);
+
+                if(!$commentary_arraycollection->contains($comment)) {
+                    $commentary_arraycollection->add($comment);
+                }
+            }
+        }
+
+        return $commentary_arraycollection;
+    }
+
     public function getHash(Team $hero, Team $villain, DateTimeInterface $dateTime): string
     {
-        return sprintf("%s:%s:%s", date_format($dateTime, "Y-m-d H:i"), $hero->getId(), $villain->getId());
+        return sprintf("%s:%s:%s", date_format($dateTime, "Y-m-d"), $hero->getId(), $villain->getId());
     }
 }

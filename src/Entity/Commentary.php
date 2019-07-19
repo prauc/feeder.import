@@ -5,63 +5,105 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Commentary
- *
- * @ORM\Table(name="commentary", uniqueConstraints={@ORM\UniqueConstraint(name="matchId_matchSortId", columns={"matchId", "matchSortId"})}, indexes={@ORM\Index(name="commentaryTypeId", columns={"commentaryTypeId"}), @ORM\Index(name="matchId", columns={"matchId"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\CommentaryRepository")
  */
 class Commentary
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="commentaryId", type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
      */
-    private $commentaryid;
+    private $id;
 
     /**
-     * @var int|null
-     *
-     * @ORM\Column(name="commentaryTypeId", type="integer", nullable=true, options={"unsigned"=true})
-     */
-    private $commentarytypeid;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="minute", type="string", length=50, nullable=false)
+     * @ORM\Column(type="string", length=50)
      */
     private $minute;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="status", type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     private $status;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="comment", type="text", length=65535, nullable=false)
+     * @ORM\Column(type="text")
      */
     private $comment;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="matchId", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Match")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $matchid;
+    private $match;
 
     /**
-     * @var float
-     *
-     * @ORM\Column(name="matchSortId", type="float", precision=10, scale=0, nullable=false)
+     * @ORM\Column(type="float")
      */
-    private $matchsortid;
+    private $sort_id;
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
+    public function getMinute(): ?string
+    {
+        return $this->minute;
+    }
+
+    public function setMinute(string $minute): self
+    {
+        $this->minute = $minute;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
+    public function setComment(string $comment): self
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function getMatch(): ?Match
+    {
+        return $this->match;
+    }
+
+    public function setMatch(?Match $match): self
+    {
+        $this->match = $match;
+
+        return $this;
+    }
+
+    public function getSortId(): ?float
+    {
+        return $this->sort_id;
+    }
+
+    public function setSortId(float $sort_id): self
+    {
+        $this->sort_id = $sort_id;
+
+        return $this;
+    }
 }

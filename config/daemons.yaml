@@ -1,12 +1,10 @@
-services:
-  _defaults:
-    autowire: true      # Automatically injects dependencies in your services.
-    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-
+daemons:
   App\Command\Liveticker\CircularLivetickerCommand:
+    sleep: 100
     tags:
       - { name: 'console.command', command: 'daemon:liveticker:circular' }
 
   App\Command\Liveticker\DailyLivetickerCommand:
+    sleep: 20
     tags:
       - { name: 'console.command', command: 'daemon:liveticker:daily' }

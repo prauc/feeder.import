@@ -65,7 +65,7 @@ class Sportal extends AbstractLivetickerSource
                             ]);
 
                             if($match === null) {
-                                $match = new Match();
+                                $match = new Match;
                             }
 
                             $sportid = $contentitem->getSPORTID();
@@ -122,7 +122,7 @@ class Sportal extends AbstractLivetickerSource
                             $this->entityManager->persist($match);
 
                             $this->entityManager->flush();
-
+                            $this->logger->info(sprintf("Match `%s` [sourcematch_id: %s] successfully imported / updated", $match->getHeadline(), $match->getSourcematchId()));
                         } catch (SportNotSupportedException | SportNotFoundException | LeagueNotFoundException $e) {
                             $this->logger->debug($e->getMessage());
                             continue;

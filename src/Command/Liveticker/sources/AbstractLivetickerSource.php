@@ -30,6 +30,7 @@ abstract class AbstractLivetickerSource
 {
     use XMLtoObjectTrait;
 
+    /** @var LivetickerCLILogger */
     protected $logger;
 
     /** @var EntityManagerInterface */
